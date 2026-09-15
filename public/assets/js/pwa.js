@@ -8,7 +8,7 @@
     // --- ثبت سرویس‌ورکر ---
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            const base = (window.SHOP && window.SHOP.base) || '';
+            const base = (window.SHOP && (window.SHOP.staticBase || window.SHOP.base)) || '';
             navigator.serviceWorker.register(base + '/sw.js', { scope: base + '/' }).catch((error) => {
                 console.warn('ثبت سرویس‌ورکر ناموفق بود:', error);
             });

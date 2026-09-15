@@ -36,17 +36,53 @@ function base_path_url(): string
         return $base;
     }
 
-    $script = (string) ($_SERVER['SCRIPT_NAME'] ?? '/index.php');
-    $dir = rtrim(str_replace('\\', '/', dirname($script)), '/');
-    $base = ($dir === '/' || $dir === '.') ? '' : $dir;
+    $dir = shopstore_script_dir();
 
-    // حالت زیرپوشه با ریدایرکت به public/ (فایل .htaccess ریشه)
-    $forwarded = forwarded_uri();
-    if ($base === '' && preg_match('#^/public/#', $forwarded)) {
-        $base = '/public';
+    // حالت «هاست بدون .htaccess»: تنها ورودی ممکن، index.php ریشه است؛
+    // پس همه لینک‌ها باید با /index.php شروع شوند (مثل /index.php/cart).
+    if (defined('SHOPSTORE_FALLBACK_ENTRY')) {
+        $base = $dir . '/index.php';
+        return $base;
+    }
+
+    // اگر اسکریپت ورودی داخل پوشه public باشد یعنی DocumentRoot روی ریشه پروژه
+    // تنظیم شده و .htaccess درخواست‌ها را به public/ هدایت می‌کند؛ در این حالت
+    // آدرس‌های سایت بدون «/public» ساخته می‌شوند (مثل /cart نه /public/cart).
+    if (str_ends_with($dir, '/public')) {
+        $base = substr($dir, 0, -strlen('/public'));
+    } else {
+        $base = $dir;
     }
 
     return $base;
+}
+
+/** مسیر اسکریپت ورودی جاری (بدون اسلش انتهایی) */
+function shopstore_script_dir(): string
+{
+    $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
+    $dir = rtrim((string) dirname($script), '/');
+    return ($dir === '/' || $dir === '.') ? '' : $dir;
+}
+
+/**
+ * مسیر پایه فایل‌های استاتیک (تصاویر، CSS، JS، فونت، آیکون)
+ * معمولاً با مسیر پایه سایت یکسان است؛ فقط در حالت fallback (بدون .htaccess)
+ * فایل‌ها زیر پوشه public سرو می‌شوند و آدرس‌ها «/public/...» می‌شوند.
+ */
+function static_base_url(): string
+{
+    if (defined('SHOPSTORE_FALLBACK_ENTRY')) {
+        return shopstore_script_dir() . '/public';
+    }
+
+    return base_path_url();
+}
+
+/** آدرس یک فایل استاتیک */
+function static_url(string $path): string
+{
+    return static_base_url() . '/' . ltrim($path, '/');
 }
 
 /** URI اصلی درخواست (با احتساب پروکسی/dev-server) */
@@ -61,7 +97,7 @@ function forwarded_uri(): string
     return $uri;
 }
 
-/** مسیر تمیز درخواست (بدون query string و بدون مسیر پایه) */
+/** مسیر تمیز درخواست (بدون query string، بدون مسیر پایه و بدون index.php) */
 function request_path(): string
 {
     static $path = null;
@@ -76,6 +112,12 @@ function request_path(): string
         $uri = substr($uri, strlen($base));
     }
     $uri = '/' . trim(preg_replace('#/+#', '/', $uri) ?? '/', '/');
+
+    // «/index.php» و «/index.php/cart» هم مثل «/» و «/cart» رفتار می‌کنند،
+    // تا ورود مستقیم با نام فایل ورودی (مثل هاست‌های بدون URL تمیز) خطا ندهد.
+    if (preg_match('#^/index\.php(/.*)?$#i', $uri, $matches) === 1) {
+        $uri = ($matches[1] ?? '') === '' ? '/' : $matches[1];
+    }
 
     $path = $uri === '//' ? '/' : $uri;
     return $path;
@@ -93,7 +135,12 @@ function url(string $path = '/', array $query = []): string
     if ($path !== '/' && substr($path, -1) === '/') {
         $path = rtrim($path, '/');
     }
-    $full = base_path_url() . ($path === '/' ? '/' : $path);
+
+    $base = base_path_url();
+    // در حالت fallback که آدرس پایه با index.php تمام می‌شود، صفحه اصلی
+    // به شکل «/index.php» ساخته می‌شود (نه «/index.php/»).
+    $prefix = ($path === '/' && str_ends_with($base, '.php')) ? $base : $base . ($path === '/' ? '/' : $path);
+    $full = $prefix;
     if ($query !== []) {
         $full .= '?' . http_build_query($query);
     }
@@ -118,7 +165,7 @@ function asset(string $path): string
     if ($version === null) {
         $version = (string) (setting('asset_version') ?: '1');
     }
-    return url($path) . (str_contains($path, '?') ? '&' : '?') . 'v=' . $version;
+    return static_url($path) . (str_contains($path, '?') ? '&' : '?') . 'v=' . $version;
 }
 
 function redirect(string $path, array $query = []): never
@@ -387,12 +434,12 @@ function app_log(string $message): void
 function product_image(?string $image): string
 {
     if (!$image) {
-        return url('/assets/img/placeholder.svg');
+        return static_url('/assets/img/placeholder.svg');
     }
     if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
         return $image;
     }
-    return url('/' . ltrim($image, '/'));
+    return static_url('/' . ltrim($image, '/'));
 }
 
 /** یافتن دسته‌بندی بر اساس slug در فهرست داده‌شده */

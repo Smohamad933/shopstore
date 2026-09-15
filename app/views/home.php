@@ -16,7 +16,7 @@ $firstSpecial = $specials[0] ?? null;
 <div class="container section-tight">
     <div class="hero" data-hero>
         <div class="hero-slide is-active">
-            <img src="<?= url('/assets/img/hero-1.jpg') ?>" alt="تجهیزات سرمایش و گرمایش" fetchpriority="high">
+            <img src="<?= static_url('/assets/img/hero-1.jpg') ?>" alt="تجهیزات سرمایش و گرمایش" fetchpriority="high">
             <div class="hero-content">
                 <span class="eyebrow">فصل تخفیف تجهیزات تأسیسات</span>
                 <h1>سرمایش و گرمایش، با قیمت پروژه‌ای</h1>
@@ -30,7 +30,7 @@ $firstSpecial = $specials[0] ?? null;
             </div>
         </div>
         <div class="hero-slide">
-            <img src="<?= url('/assets/img/hero-2.jpg') ?>" alt="لوله، اتصالات و شیرآلات" loading="lazy">
+            <img src="<?= static_url('/assets/img/hero-2.jpg') ?>" alt="لوله، اتصالات و شیرآلات" loading="lazy">
             <div class="hero-content">
                 <span class="eyebrow">تأمین پروژه‌ای</span>
                 <h1>لوله، اتصالات و شیرآلات</h1>

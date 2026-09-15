@@ -55,9 +55,16 @@ if (is_dir($sessionDir) && is_writable($sessionDir)) {
     ini_set('session.gc_divisor', '100');
     ini_set('session.gc_maxlifetime', (string) (60 * 60 * 24 * 30));
 }
+$sessionCookiePath = base_path_url();
+if ($sessionCookiePath === '') {
+    $sessionCookiePath = '/';
+} elseif (!str_ends_with($sessionCookiePath, '.php')) {
+    $sessionCookiePath .= '/';
+}
+
 session_set_cookie_params([
     'lifetime' => 60 * 60 * 24 * 30,
-    'path'     => base_path_url() === '' ? '/' : base_path_url() . '/',
+    'path'     => $sessionCookiePath,
     'httponly' => true,
     'samesite' => 'Lax',
     'secure'   => (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') || (($_SERVER['HTTPS'] ?? '') === 'on'),

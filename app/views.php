@@ -26,7 +26,7 @@ function render(string $name, array $data = [], array $options = []): void
         'title'       => $options['title'] ?? null,
         'description' => $options['description'] ?? setting('site_description'),
         'canonical'   => $options['canonical'] ?? absolute_url(request_path()),
-        'og_image'    => $options['og_image'] ?? url('/assets/img/hero-1.jpg'),
+        'og_image'    => $options['og_image'] ?? static_url('/assets/img/hero-1.jpg'),
         'body_class'  => $options['body_class'] ?? '',
         'no_index'    => $options['no_index'] ?? false,
     ], $options);

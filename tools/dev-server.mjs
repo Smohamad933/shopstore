@@ -25,6 +25,17 @@ const PUBLIC_DIR = path.join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 8080);
 const HOST = process.env.HOST || '0.0.0.0';
 
+/**
+ * حالت DocumentRoot:
+ *  • پیش‌فرض (public): مثل هاستی که DocumentRoot را روی public/ تنظیم کرده است.
+ *  • root: شبیه‌سازی هاستی که کل پروژه را در ریشه گذاشته و .htaccess هم ندارد؛
+ *    در این حالت فایل index.php ریشه نقطه ورود است (پوشه‌های داخلی مسدود می‌شوند).
+ * برای تست: SHOP_DOCROOT=root npm run dev
+ */
+const DOCROOT_MODE = process.env.SHOP_DOCROOT === 'root' ? 'root' : 'public';
+const DOCROOT_DIR = DOCROOT_MODE === 'root' ? ROOT : PUBLIC_DIR;
+const BLOCKED_DIRS = /^\/(app|database|storage|tools|node_modules|vendor)(\/|$)/;
+
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -159,7 +170,7 @@ async function main() {
 
   const handler = new PHPRequestHandler({
     php,
-    documentRoot: '/shop/public',
+    documentRoot: DOCROOT_MODE === 'root' ? '/shop' : '/shop/public',
     absoluteUrl: `http://localhost:${PORT}`,
     cookieStore: perClientCookieStore,
   });
@@ -191,10 +202,14 @@ async function main() {
 
       // جلوگیری از path traversal
       const safePath = path.normalize(pathname).replace(/^(\.\.[/\\])+/, '');
-      const candidate = path.join(PUBLIC_DIR, safePath);
+      const candidate = path.join(DOCROOT_DIR, safePath);
+
+      // در حالت root، پوشه‌های داخلی پروژه (app، storage، …) هرگز سرو نمی‌شوند
+      const blocked = DOCROOT_MODE === 'root' && BLOCKED_DIRS.test(safePath);
 
       if (
-        candidate.startsWith(PUBLIC_DIR) &&
+        !blocked &&
+        candidate.startsWith(DOCROOT_DIR) &&
         safePath !== '/' &&
         !safePath.endsWith('/') &&
         !safePath.toLowerCase().endsWith('.php') &&
@@ -205,6 +220,9 @@ async function main() {
         sendStatic(req, res, candidate);
         return;
       }
+
+      // در حالت root، فایل index.php ریشه نقطه ورود است
+      const entry = DOCROOT_MODE === 'root' ? '/index.php' : '/index.php';
 
       const body = await collectBody(req);
       const headers = {};
@@ -225,7 +243,7 @@ async function main() {
         try {
           return await handler.request({
             // مسیر همیشه به front-controller می‌رود؛ مسیر اصلی در X-Forwarded-Uri است
-            url: '/index.php' + search,
+            url: entry + search,
             method: req.method || 'GET',
             headers,
             body: body.length ? new Uint8Array(body) : undefined,
@@ -253,7 +271,7 @@ async function main() {
   });
 
   server.listen(PORT, HOST, () => {
-    log(`SazehShop preview → http://${HOST}:${PORT}`);
+    log(`SazehShop preview → http://${HOST}:${PORT} (DocumentRoot: ${DOCROOT_MODE === 'root' ? 'ریشه پروژه' : 'public/'})`);
   });
 }
 

@@ -208,7 +208,7 @@
                 const input = couponForm.querySelector('input[name="code"]');
                 const button = couponForm.querySelector('button[type="submit"]');
                 button.classList.add('is-loading');
-                const result = await post(SHOP.urls.cartCoupon || (SHOP.base + '/cart/coupon'), { code: input.value });
+                const result = await post(SHOP.urls.cartCoupon || '/cart/coupon', { code: input.value });
                 button.classList.remove('is-loading');
                 toast(result.message, result.ok ? 'success' : 'error');
                 if (result.ok) {

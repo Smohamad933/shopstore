@@ -26,33 +26,35 @@ $description = $meta['description'] ?? setting('site_description');
     <meta property="og:site_name" content="<?= e($siteName) ?>">
     <meta property="og:title" content="<?= e($pageTitle) ?>">
     <meta property="og:description" content="<?= e($description) ?>">
-    <meta property="og:image" content="<?= e($meta['og_image'] ?? url('/assets/img/hero-1.jpg')) ?>">
+    <meta property="og:image" content="<?= e($meta['og_image'] ?? static_url('/assets/img/hero-1.jpg')) ?>">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- PWA -->
     <meta name="theme-color" content="#0f766e">
     <meta name="color-scheme" content="light">
-    <link rel="manifest" href="<?= url('/manifest.webmanifest') ?>">
-    <link rel="icon" href="<?= url('/assets/icons/favicon.svg') ?>" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="<?= url('/assets/icons/icon-192.png') ?>">
+    <link rel="manifest" href="<?= static_url('/manifest.webmanifest') ?>">
+    <link rel="icon" href="<?= static_url('/assets/icons/favicon.svg') ?>" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="<?= static_url('/assets/icons/icon-192.png') ?>">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="<?= e($siteName) ?>">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <link rel="preload" href="<?= url('/assets/fonts/Vazirmatn-Regular.woff2') ?>" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="<?= url('/assets/fonts/Vazirmatn-SemiBold.woff2') ?>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<?= static_url('/assets/fonts/Vazirmatn-Regular.woff2') ?>" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="<?= static_url('/assets/fonts/Vazirmatn-SemiBold.woff2') ?>" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="<?= asset('/assets/css/app.css') ?>">
     <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
     <script>
         window.SHOP = {
             base: <?= json_encode(base_path_url(), JSON_UNESCAPED_SLASHES) ?>,
+            staticBase: <?= json_encode(static_base_url(), JSON_UNESCAPED_SLASHES) ?>,
             urls: {
                 cart: <?= json_encode(url('/api/cart')) ?>,
                 cartAdd: <?= json_encode(url('/cart/add')) ?>,
                 cartUpdate: <?= json_encode(url('/cart/update')) ?>,
                 cartRemove: <?= json_encode(url('/cart/remove')) ?>,
-                search: <?= json_encode(url('/api/search')) ?>
+                search: <?= json_encode(url('/api/search')) ?>,
+                cartCoupon: <?= json_encode(url('/cart/coupon')) ?>
             },
             csrf: <?= json_encode(csrf_token()) ?>
         };

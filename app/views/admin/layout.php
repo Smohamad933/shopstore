@@ -34,7 +34,7 @@ $menu = [
     <title><?= e($meta['title']) ?> | پنل مدیریت <?= e(setting('site_name')) ?></title>
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#14161a">
-    <link rel="icon" href="<?= url('/assets/icons/favicon.svg') ?>" type="image/svg+xml">
+    <link rel="icon" href="<?= static_url('/assets/icons/favicon.svg') ?>" type="image/svg+xml">
     <link rel="stylesheet" href="<?= asset('/assets/css/app.css') ?>">
     <link rel="stylesheet" href="<?= asset('/assets/css/admin.css') ?>">
     <script>
