@@ -23,7 +23,7 @@ return [
     'currency'      => 'تومان',
     'per_page'      => 12,   // تعداد محصول در هر صفحه
     'products_media' => BASE_PATH . '/public/uploads/products',
-    'asset_version'  => '1',  // با هر تغییر در CSS/JS یک عدد بالا ببرید تا کش مرورگر تازه شود
+    'asset_version'  => '2',  // با هر تغییر در CSS/JS یک عدد بالا ببرید تا کش مرورگر تازه شود
 
     // --- تنظیمات پیش‌فرض سایت (قابل ویرایش از پنل مدیریت) ---
     'settings_defaults' => [

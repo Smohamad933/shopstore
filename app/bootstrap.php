@@ -50,6 +50,10 @@ if (!is_dir($sessionDir)) {
 }
 if (is_dir($sessionDir) && is_writable($sessionDir)) {
     session_save_path($sessionDir);
+    // پاک‌سازی خودکار نشست‌های قدیمی (مثل رفتار پیش‌فرض هاست‌های اشتراکی)
+    ini_set('session.gc_probability', '1');
+    ini_set('session.gc_divisor', '100');
+    ini_set('session.gc_maxlifetime', (string) (60 * 60 * 24 * 30));
 }
 session_set_cookie_params([
     'lifetime' => 60 * 60 * 24 * 30,

@@ -652,17 +652,19 @@ ul { margin: 0; padding: 0; list-style: none; }
     height: 100%;
     object-fit: cover;
 }
+/* متن هیرو در سمت چپ قرار می‌گیرد تا روی تصویر محصول (سمت راست) نیفتد */
 .hero-slide::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to left, rgba(10, 12, 16, .78) 0%, rgba(10, 12, 16, .45) 45%, rgba(10, 12, 16, .1) 100%);
+    background: linear-gradient(to right, rgba(10, 12, 16, .8) 0%, rgba(10, 12, 16, .5) 42%, rgba(10, 12, 16, .06) 78%);
 }
 .hero-content {
     position: relative;
     z-index: 2;
     padding: 38px 34px;
     max-width: 560px;
+    margin-inline-start: auto;
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -684,7 +686,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 .hero-dots {
     position: absolute;
     bottom: 16px;
-    inset-inline-start: 34px;
+    inset-inline-end: 34px;
     display: flex;
     gap: 7px;
     z-index: 3;
@@ -1359,7 +1361,7 @@ ul { margin: 0; padding: 0; list-style: none; }
     .hero-slide, .hero { min-height: 230px; }
     .hero-content h1 { font-size: 1.32rem; }
     .hero-content p { font-size: .86rem; }
-    .hero-dots { inset-inline-start: 20px; bottom: 12px; }
+    .hero-dots { inset-inline-end: 20px; bottom: 12px; }
     .gallery { grid-template-columns: minmax(0, 1fr); }
     .gallery-thumbs { flex-direction: row; order: 2; overflow-x: auto; }
     .gallery-thumbs button { width: 68px; flex: 0 0 auto; }

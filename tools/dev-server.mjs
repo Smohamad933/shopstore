@@ -72,6 +72,17 @@ function log(...args) {
   console.log(`[dev]`, ...args);
 }
 
+/** اجرای متوالی درخواست‌های PHP (موتور WASM تک‌نمونه است) */
+let phpQueue = Promise.resolve();
+function withPhpLock(task) {
+  const run = phpQueue.then(task, task);
+  phpQueue = run.then(
+    () => undefined,
+    () => undefined
+  );
+  return run;
+}
+
 function sendStatic(req, res, filePath) {
   const stat = fs.statSync(filePath);
   const ext = path.extname(filePath).toLowerCase();
@@ -128,10 +139,29 @@ async function main() {
   log('booting PHP 8.3 (WebAssembly runtime) …');
   const t0 = Date.now();
   const php = new PHP(await loadNodeRuntime('8.3', { emscriptenOptions: { processId: 1 } }));
+
+  /**
+   * نکته مهم: PHPRequestHandler به‌صورت پیش‌فرض یک «انبار کوکی» مشترک دارد و هدر
+   * Cookie هر کاربر را با آن جایگزین می‌کند؛ نتیجه‌اش این می‌شود که همه بازدیدکننده‌ها
+   * یک نشست مشترک دارند (سبد خرید و ورود کاربران با هم قاطی می‌شود).
+   * اینجا با یک انبار کوکی «بی‌اثر» جایگزین می‌شود تا کوکی‌ها مثل وب‌سرور واقعی
+   * فقط بین مرورگر کاربر و پاسخ‌ها رد و بدل شوند.
+   */
+  let activeCookies = '';
+  const perClientCookieStore = {
+    rememberCookiesFromResponseHeaders() {
+      /* مرورگر کاربر خودش کوکی‌ها را نگه می‌دارد */
+    },
+    getCookieRequestHeader() {
+      return activeCookies;
+    },
+  };
+
   const handler = new PHPRequestHandler({
     php,
     documentRoot: '/shop/public',
     absoluteUrl: `http://localhost:${PORT}`,
+    cookieStore: perClientCookieStore,
   });
   try {
     await php.mkdir('/shop');
@@ -167,7 +197,8 @@ async function main() {
         candidate.startsWith(PUBLIC_DIR) &&
         safePath !== '/' &&
         !safePath.endsWith('/') &&
-        !safePath.endsWith('index.php') &&
+        !safePath.toLowerCase().endsWith('.php') &&
+        !safePath.toLowerCase().startsWith('/.') &&
         fs.existsSync(candidate) &&
         fs.statSync(candidate).isFile()
       ) {
@@ -186,12 +217,22 @@ async function main() {
       headers['Host'] = headers['X-Forwarded-Host'] || req.headers.host || `localhost:${PORT}`;
 
       const search = (req.url || '').includes('?') ? (req.url || '').slice(rawPath.length) : '';
-      const phpResponse = await handler.request({
-        // مسیر همیشه به front-controller می‌رود؛ مسیر اصلی در X-Forwarded-Uri است
-        url: '/index.php' + search,
-        method: req.method || 'GET',
-        headers,
-        body: body.length ? new Uint8Array(body) : undefined,
+
+      // کوکی‌های همین درخواست به PHP داده می‌شود (بدون نشست مشترک بین کاربران).
+      // درخواست‌های PHP سریالی اجرا می‌شوند چون موتور WASM تک‌نمونه است.
+      const phpResponse = await withPhpLock(async () => {
+        activeCookies = headers['Cookie'] || '';
+        try {
+          return await handler.request({
+            // مسیر همیشه به front-controller می‌رود؛ مسیر اصلی در X-Forwarded-Uri است
+            url: '/index.php' + search,
+            method: req.method || 'GET',
+            headers,
+            body: body.length ? new Uint8Array(body) : undefined,
+          });
+        } finally {
+          activeCookies = '';
+        }
       });
 
       const outHeaders = {};
