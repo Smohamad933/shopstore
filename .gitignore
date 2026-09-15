@@ -1,0 +1,25 @@
+# --- dependencies ---
+node_modules/
+vendor/
+
+# --- runtime / data ---
+storage/*.sqlite
+storage/*.sqlite-journal
+storage/*.sqlite-wal
+storage/*.sqlite-shm
+storage/sessions/*
+storage/logs/*
+!storage/sessions/.gitkeep
+!storage/logs/.gitkeep
+
+# --- uploads (user content) ---
+public/uploads/*
+!public/uploads/.gitkeep
+
+# --- misc ---
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+.idea/
+.vscode/

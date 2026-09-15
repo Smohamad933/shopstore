@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="دستگیره و قفل درب">
+    <rect width="400" height="400" fill="#fbfbfa"/>
+    <ellipse cx="200" cy="320" rx="120" ry="12" fill="#ededea"/>
+    <!-- پلاک -->
+    <rect x="144" y="120" width="112" height="160" rx="14" fill="#f7f7f5" stroke="#d5d5d0" stroke-width="3"/>
+    <circle cx="200" cy="212" r="9" fill="none" stroke="#cfcfc9" stroke-width="3"/>
+    <!-- دستگیره -->
+    <rect x="176" y="176" width="48" height="14" rx="7" fill="#ffffff" stroke="#c9c9c3" stroke-width="3"/>
+    <path d="M224 176h56a10 10 0 0 1 10 10v8a10 10 0 0 1-10 10h-56" fill="#ffffff" stroke="#c9c9c3" stroke-width="3" stroke-linejoin="round"/>
+    <!-- اثر انگشت (قفل هوشمند) -->
+    <g opacity="0.55" fill="none" stroke="#bdbdb6" stroke-width="2.4" stroke-linecap="round">
+        <path d="M190 140c6-4 14-4 20 0"/>
+        <path d="M186 132c9-6 20-6 28 0"/>
+        <path d="M194 148c4-3 8-3 12 0"/>
+    </g>
+    <circle cx="200" cy="258" r="4" fill="#cfcfc9"/>
+</svg>

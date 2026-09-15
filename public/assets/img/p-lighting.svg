@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="چراغ خطی توکار">
+    <rect width="400" height="400" fill="#fbfbfa"/>
+    <ellipse cx="200" cy="316" rx="132" ry="13" fill="#ededea"/>
+    <!-- بدنه چراغ -->
+    <rect x="86" y="150" width="228" height="46" rx="10" fill="#f4f4f2" stroke="#d5d5d0" stroke-width="3"/>
+    <rect x="102" y="166" width="196" height="14" rx="7" fill="#ffffff" stroke="#e2e2dd" stroke-width="2"/>
+    <!-- نور -->
+    <g opacity="0.5">
+        <path d="M112 210h176" stroke="#c9c9c3" stroke-width="3" stroke-linecap="round"/>
+        <path d="M132 226h136" stroke="#dcdcd6" stroke-width="3" stroke-linecap="round"/>
+        <path d="M156 242h88" stroke="#e6e6e0" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <!-- بست‌های نصب -->
+    <path d="M120 150v-18h14v18M266 150v-18h14v18" fill="none" stroke="#cfcfc9" stroke-width="3" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="تصویر محصول">
+    <rect width="400" height="400" fill="#fbfbfa"/>
+    <g fill="none" stroke="#d9d9d4" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M120 250V150l80-46 80 46v100"/>
+        <path d="M100 250h200"/>
+        <path d="M170 250v-56h60v56"/>
+    </g>
+    <text x="200" y="315" text-anchor="middle" font-family="Tahoma, sans-serif" font-size="20" fill="#b4b4ae">تصویر در دسترس نیست</text>
+</svg>

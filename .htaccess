@@ -1,0 +1,30 @@
+# ---------------------------------------------------------------------------
+# SazehShop — فایل .htaccess ریشه پروژه
+#
+# این فایل فقط برای حالتی است که دسترسی به تنظیم DocumentRoot ندارید و پروژه
+# را در ریشه دامنه (public_html) آپلود کرده‌اید. در این حالت همه درخواست‌ها به
+# پوشه public/ هدایت می‌شوند.
+#
+# روش توصیه‌شده (و امن‌تر): DocumentRoot دامنه را روی پوشه public/ تنظیم کنید؛
+# در آن حالت این فایل لازم نیست و فایل public/.htaccess کار را انجام می‌دهد.
+# ---------------------------------------------------------------------------
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # دسترسی مستقیم به پوشه‌های داخلی ممنوع
+    RewriteRule ^(app|database|storage|tools|node_modules|vendor)(/|$) - [F,L]
+
+    # درخواست‌های پوشه public بدون تغییر مسیر عبور می‌کنند
+    RewriteRule ^public/ - [L]
+
+    # بقیه درخواست‌ها داخل public هدایت می‌شوند
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# اگر mod_rewrite در دسترس نبود، حداقل از اجرای فایل‌های داخلی جلوگیری شود
+<FilesMatch "\.(sqlite|sqlite3|log|md|sql)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes

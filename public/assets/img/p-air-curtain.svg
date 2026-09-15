@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="پرده هوا">
+    <rect width="400" height="400" fill="#fbfbfa"/>
+    <!-- بدنه افقی -->
+    <rect x="58" y="132" width="284" height="66" rx="12" fill="#f4f4f2" stroke="#d5d5d0" stroke-width="3"/>
+    <rect x="72" y="146" width="256" height="18" rx="6" fill="#ffffff" stroke="#e2e2dd" stroke-width="2"/>
+    <!-- دریچه‌های خروج هوا -->
+    <g stroke="#c9c9c3" stroke-width="3" stroke-linecap="round">
+        <path d="M84 186h40M136 186h40M188 186h40M240 186h40M292 186h26"/>
+    </g>
+    <!-- جریان هوا -->
+    <g opacity="0.55" fill="none" stroke="#c2c2bb" stroke-width="3" stroke-linecap="round">
+        <path d="M110 208v46"/><path d="M110 254l-8-9M110 254l8-9"/>
+        <path d="M200 208v64"/><path d="M200 272l-8-9M200 272l8-9"/>
+        <path d="M290 208v46"/><path d="M290 254l-8-9M290 254l8-9"/>
+    </g>
+    <!-- ریموت -->
+    <rect x="292" y="298" width="34" height="58" rx="9" fill="#ffffff" stroke="#c9c9c3" stroke-width="3"/>
+    <g stroke="#dcdcd6" stroke-width="3" stroke-linecap="round">
+        <path d="M302 314h14M302 326h14M302 338h14"/>
+    </g>
+    <path d="M74 216h34M74 228h24" stroke="#dcdcd6" stroke-width="3" stroke-linecap="round"/>
+</svg>
